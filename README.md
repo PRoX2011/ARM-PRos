@@ -55,13 +55,10 @@ qemu-system-aarch64 \
     -cpu cortex-a53 \
     -m 1024 \
     -kernel build/KERNEL.ELF \
-    -serial stdio \
-    -display none
+    -display gtk \
+    -serial vc \
+    -monitor stdio
 ```
-
-### Raspberry Pi 3B Note
-
-Raspberry Pi 3B emulation is not yet fully supported on QEMU. Currently, the OS is configured to run on the QEMU `virt` machine which provides full functionality. Porting to Raspberry Pi will require additional device driver implementations and memory layout adjustments.
 
 <div align="center">
 
