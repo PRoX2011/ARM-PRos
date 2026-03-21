@@ -12,7 +12,7 @@
 
 **A minimalistic 64-bit operating system written in C and Assembly for ARMv8-A architecture**
 
-<img src="docs/screenshots/terminal.png" width=45%>
+<img src="docs/screenshots/terminal.png" width=75%>
 
 </div>
 
