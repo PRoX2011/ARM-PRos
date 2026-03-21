@@ -64,7 +64,8 @@ Or manually:
 ```bash
 qemu-system-aarch64 \
     -M raspi3b \
-    -kernel build/KERNEL.ELF \
+    -drive file="$SD_IMG",format=raw,if=sd,index=0 \
+    -kernel "$KERNEL_IMG" \
     -serial stdio \
     -display gtk
 ```

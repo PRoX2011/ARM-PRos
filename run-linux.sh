@@ -18,9 +18,23 @@ print_msg() {
 print_msg "$NC" ""
 print_msg "$GREEN" "Starting ARM emulator..."
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SD_IMG="${ROOT}/build/sdcard.img"
+KERNEL_IMG="${ROOT}/build/kernel8.img"
+
+if [ ! -f "$SD_IMG" ]; then
+    print_msg "$RED" "Missing ${SD_IMG} — run ./build-linux.sh first (needs sfdisk, mkfs.fat, mcopy, curl)."
+    exit 1
+fi
+if [ ! -f "$KERNEL_IMG" ]; then
+    print_msg "$RED" "Missing ${KERNEL_IMG} — run ./build-linux.sh first."
+    exit 1
+fi
+
 # Raspberry Pi 3
 qemu-system-aarch64 \
     -M raspi3b \
-    -kernel build/KERNEL.ELF \
+    -drive file="$SD_IMG",format=raw,if=sd,index=0 \
+    -kernel "$KERNEL_IMG" \
     -serial stdio \
     -display gtk

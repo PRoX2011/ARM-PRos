@@ -123,7 +123,17 @@ if [ -f "$OUTPUT" ]; then
     size_bytes=$(stat -c%s "$OUTPUT" 2>/dev/null || echo "0")
     print_ok "Kernel compiled successfully: ${size_bytes} bytes"
     print_ok "Output: $OUTPUT"
-    print_ok "Pi 3 SD boot: copy ${BUILD_DIR}/kernel8.img to boot partition as kernel8.img"
+    print_ok "Pi 3: flash ${BUILD_DIR}/sdcard.img (see scripts/mksdcard.sh) or copy files to boot FAT"
+
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -x "${SCRIPT_DIR}/scripts/mksdcard.sh" ]; then
+        print_info "Building bootable SD image (scripts/mksdcard.sh)..."
+        if "${SCRIPT_DIR}/scripts/mksdcard.sh"; then
+            print_ok "SD image: ${BUILD_DIR}/sdcard.img"
+        elif [ $FLAG_QUIET_MODE == 0 ]; then
+            echo -e "${YELLOW}[ WARN ]${NC} sdcard.img not built (need sfdisk, mkfs.fat, mcopy, curl). Run: ./scripts/mksdcard.sh"
+        fi
+    fi
 else
     print_failed "Kernel ELF not created"
 fi
