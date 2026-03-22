@@ -1,5 +1,6 @@
 #include <drivers/usb.h>
 #include <drivers/uart.h>
+#include <drivers/timer.h>
 #include <stdlib.h>
 
 /* DWC2 USB Controller Base Address (Raspberry Pi 3) */
@@ -166,13 +167,6 @@ static const char scancode_to_ascii_shift[128] = {
 #define HID_MOD_RALT    0x40
 #define HID_MOD_RMETA   0x80
 
-static void usb_delay_ms(unsigned ms)
-{
-    for (volatile unsigned i = 0; i < ms * 10000; i++) {
-        __asm__("nop");
-    }
-}
-
 static void usb_core_reset(void)
 {
     uart_puts("[DWC2] Core reset...\n\r");
@@ -202,7 +196,7 @@ static void usb_core_reset(void)
     }
     
     uart_puts("[DWC2] Core reset complete\n\r");
-    usb_delay_ms(100);
+    timer_delay_ms(100);
 }
 
 static void usb_phy_init(void)
@@ -215,7 +209,7 @@ static void usb_phy_init(void)
     gccfg |= GCCFG_VBUSVLD | GCCFG_BVALID;
     USB_GCCFG = gccfg;
     
-    usb_delay_ms(50);
+    timer_delay_ms(50);
     uart_puts("[DWC2] PHY initialized\n\r");
 }
 
@@ -229,7 +223,7 @@ static void usb_host_init(void)
     gusbcfg &= ~GUSBCFG_FDMOD;
     USB_GUSBCFG = gusbcfg;
     
-    usb_delay_ms(50);
+    timer_delay_ms(50);
     
     /* Configure HCFG */
     unsigned hcfg = USB_HCFG;

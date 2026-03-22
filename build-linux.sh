@@ -77,6 +77,9 @@ check_error "Failed to compile console.c"
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/intc.c" -o "$BIN_DIR/intc.o"
 check_error "Failed to compile intc.c"
 
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/timer.c" -o "$BIN_DIR/timer.o"
+check_error "Failed to compile timer.c"
+
 print_info "Compiling Rust USB driver..."
 (cd "$SRC_DIR/rust-usb" && cargo build --release --target aarch64-unknown-none)
 check_error "Failed to compile rust-usb"
@@ -121,6 +124,7 @@ ${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/mailbox.o" \
     "$BIN_DIR/uart.o" \
     "$BIN_DIR/intc.o" \
+    "$BIN_DIR/timer.o" \
     "$SRC_DIR/rust-usb/target/aarch64-unknown-none/release/librust_usb.a" \
     "$BIN_DIR/font8x8_basic.o" \
     "$BIN_DIR/string.o" \

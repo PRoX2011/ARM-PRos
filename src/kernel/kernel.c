@@ -1,6 +1,7 @@
 #include <drivers/console.h>
 #include <drivers/framebuffer.h>
 #include <drivers/uart.h>
+#include <drivers/timer.h>
 #include <drivers/usb.h>
 #include <drivers/intc.h>
 #include <kshell.h>
@@ -32,6 +33,7 @@ const char *shell = "* Shell: ARM-PRos kernel shell\n\r";
 
 void main() {
     console_init();
+    timer_init();
     intc_init();
 
     log_okay("UART PL011 serial console ready");
