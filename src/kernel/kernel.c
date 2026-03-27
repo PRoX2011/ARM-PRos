@@ -2,6 +2,7 @@
 #include <drivers/framebuffer.h>
 #include <drivers/uart.h>
 #include <drivers/keyboard.h>
+#include <drivers/sd.h>
 #include <kshell.h>
 #include <log.h>
 #include <string.h>
@@ -30,6 +31,12 @@ void main() {
         log_warn("Framebuffer not available - HDMI output disabled");
 
     keyboard_init();
+
+    if (sd_init()) {
+        log_okay("SD Card (EMMC) initialized");
+    } else {
+        log_error("SD Card initialization failed");
+    }
     
     log_okay("Kernel shell ready to start");
 
