@@ -1,6 +1,7 @@
 #include <drivers/console.h>
 #include <drivers/framebuffer.h>
 #include <drivers/uart.h>
+#include <drivers/keyboard.h>
 #include <kshell.h>
 #include <log.h>
 #include <string.h>
@@ -27,10 +28,14 @@ void main() {
         log_okay("Framebuffer 640x480, 32 bpp (VideoCore mailbox)");
     else
         log_warn("Framebuffer not available - HDMI output disabled");
+
+    keyboard_init();
+    
     log_okay("Kernel shell ready to start");
 
-    console_puts("\n\rPress any key to continue...\n\r");
-    (void)uart_getc();
+    console_puts("\n\rPress any key on UART OR Keyboard to continue...\n\r");
+    
+    (void)keyboard_getc();
 
     console_clear(0xFF202428u);
 
