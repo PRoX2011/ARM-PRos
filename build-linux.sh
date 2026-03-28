@@ -92,6 +92,9 @@ print_info "Compiling Kernel..."
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/log.c" -o "$BIN_DIR/log.o"
 check_error "Failed to compile log.c"
 
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/power.c" -o "$BIN_DIR/power.o"
+check_error "Failed to compile power.c"
+
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.o"
 check_error "Failed to compile kernel.c"
 
@@ -104,6 +107,7 @@ ${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/boot.o" \
     "$BIN_DIR/kernel_c.o" \
     "$BIN_DIR/log.o" \
+    "$BIN_DIR/power.o" \
     "$BIN_DIR/kshell.o" \
     "$BIN_DIR/console.o" \
     "$BIN_DIR/framebuffer.o" \

@@ -3,6 +3,7 @@
 #include <drivers/uart.h>
 #include <log.h>
 #include <string.h>
+#include <power.h>
 
 #define CMD_MAX_LEN 256
 
@@ -22,11 +23,19 @@ void kshell_start(void) {
             if (cmd_len > 0) {
                 if (strcmp(cmd_buffer, "help") == 0) {
                     console_puts("Available commands:\n\r");
-                    console_puts("  help  - Show this help message\n\r");
-                    console_puts("  cls   - Clear screen\n\r");
+                    console_puts("  help   - Show this help message\n\r");
+                    console_puts("  cls    - Clear screen\n\r");
+                    console_puts("  shut   - Shut down your device\n\r");
+                    console_puts("  reboot - Reboot down your device\n\r");
                 }
                 else if (strcmp(cmd_buffer, "cls") == 0) {
                     console_clear(0xFF202428u);
+                }
+                else if (strcmp(cmd_buffer, "shut") == 0) {
+                    power_off();
+                }
+                else if (strcmp(cmd_buffer, "reboot") == 0) {
+                    reboot();
                 }
                 else {
                     char msg[CMD_MAX_LEN + 32];

@@ -4,6 +4,7 @@ bin/
 *.o
 *.elf
 *.img
+target/
 
 # Editor and IDE
 .vscode/
