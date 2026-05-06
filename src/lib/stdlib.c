@@ -46,7 +46,7 @@ char *itoa(int value, char *str, int base) {
         n = -n;
     }
 
-    const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+    static const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
     do {
         *ptr++ = digits[n % base];
