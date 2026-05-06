@@ -1,12 +1,12 @@
 #include <drivers/console.h>
 #include <drivers/framebuffer.h>
 #include <drivers/uart.h>
-#include <drivers/keyboard.h>
-#include <drivers/sd.h>
 #include <kshell.h>
 #include <log.h>
 #include <string.h>
 #include <stdlib.h>
+#include <interrupts.h>
+#include <timer.h>
 
 const char *header = "=============================== ARM-PRos v0.1 ==============================\n\r";
 
@@ -29,20 +29,16 @@ void main() {
         log_okay("Framebuffer 640x480, 32 bpp (VideoCore mailbox)");
     else
         log_warn("Framebuffer not available - HDMI output disabled");
-
-    keyboard_init();
-
-    if (sd_init()) {
-        log_okay("SD Card (EMMC) initialized");
-    } else {
-        log_error("SD Card initialization failed");
-    }
     
+    interrupts_init();
+    timer_init();
+    enable_interrupts();
+
+    log_okay("Interrupts and Generic Timer initialized");
     log_okay("Kernel shell ready to start");
 
-    console_puts("\n\rPress any key on UART OR Keyboard to continue...\n\r");
-    
-    (void)keyboard_getc();
+    console_puts("\n\rPress any key to continue...\n\r");
+    (void)uart_getc();
 
     console_clear(0xFF202428u);
 

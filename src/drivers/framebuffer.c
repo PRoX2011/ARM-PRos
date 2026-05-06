@@ -26,7 +26,7 @@ static unsigned fb_pitch;
 #define FB_FG_DEFAULT 0xFFe8e8e8u
 
 static uint32_t fb_fg = FB_FG_DEFAULT;
-static uint32_t fb_bg = 0xFF202428u;
+static uint32_t fb_bg = 0xFF282420u;
 static int fb_ready;
 
 static uint32_t bus_to_arm_phys(uint32_t bus)

@@ -8,9 +8,9 @@
 #define ANSI_RED   "\033[91m"
 #define ANSI_ORANGE "\033[33m"
 
-#define FB_GREEN  0xFF4CAF50u
-#define FB_RED    0xFFFF3333u
-#define FB_ORANGE 0xFFFFB74Du
+#define FB_GREEN  0xFF50AF4Cu
+#define FB_RED    0xFF3333FFu
+#define FB_ORANGE 0xFF4DB7FFu
 
 static void emit_fb_line(uint32_t color, const char *tag, const char *msg)
 {

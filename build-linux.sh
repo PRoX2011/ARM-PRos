@@ -58,7 +58,7 @@ print_splitline "Starting ARM x16-PRos build..."
 
 rm -f "$BIN_DIR"/*.o "$OUTPUT"
 
-CFLAGS="-ffreestanding -nostdlib -Isrc/include"
+CFLAGS="-ffreestanding -nostdlib -mgeneral-regs-only -Isrc/include"
 CROSS_COMPILE="aarch64-linux-gnu-"
 
 print_info "Compiling Drivers..."
@@ -92,6 +92,15 @@ print_info "Compiling Kernel..."
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/log.c" -o "$BIN_DIR/log.o"
 check_error "Failed to compile log.c"
 
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/power.c" -o "$BIN_DIR/power.o"
+check_error "Failed to compile power.c"
+
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/interrupts.c" -o "$BIN_DIR/interrupts.o"
+check_error "Failed to compile interrupts.c"
+
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/timer.c" -o "$BIN_DIR/timer.o"
+check_error "Failed to compile timer.c"
+
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.o"
 check_error "Failed to compile kernel.c"
 
@@ -99,11 +108,18 @@ print_info "Assembling Bootstrap..."
 ${CROSS_COMPILE}gcc -c "$SRC_DIR/arch/boot.S" -o "$BIN_DIR/boot.o"
 check_error "Failed to assemble boot.S"
 
+${CROSS_COMPILE}gcc -c "$SRC_DIR/arch/exception.S" -o "$BIN_DIR/exception.o"
+check_error "Failed to assemble exception.S"
+
 print_info "Linking..."
 ${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/boot.o" \
+    "$BIN_DIR/exception.o" \
     "$BIN_DIR/kernel_c.o" \
     "$BIN_DIR/log.o" \
+    "$BIN_DIR/power.o" \
+    "$BIN_DIR/interrupts.o" \
+    "$BIN_DIR/timer.o" \
     "$BIN_DIR/kshell.o" \
     "$BIN_DIR/console.o" \
     "$BIN_DIR/framebuffer.o" \
