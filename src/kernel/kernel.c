@@ -5,6 +5,8 @@
 #include <log.h>
 #include <string.h>
 #include <stdlib.h>
+#include <interrupts.h>
+#include <timer.h>
 
 const char *header = "=============================== ARM-PRos v0.1 ==============================\n\r";
 
@@ -27,6 +29,12 @@ void main() {
         log_okay("Framebuffer 640x480, 32 bpp (VideoCore mailbox)");
     else
         log_warn("Framebuffer not available - HDMI output disabled");
+    
+    interrupts_init();
+    timer_init();
+    enable_interrupts();
+
+    log_okay("Interrupts and Generic Timer initialized");
     log_okay("Kernel shell ready to start");
 
     console_puts("\n\rPress any key to continue...\n\r");
