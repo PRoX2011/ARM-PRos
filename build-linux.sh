@@ -101,6 +101,12 @@ check_error "Failed to compile interrupts.c"
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/timer.c" -o "$BIN_DIR/timer.o"
 check_error "Failed to compile timer.c"
 
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/pmm.c" -o "$BIN_DIR/pmm.o"
+check_error "Failed to compile pmm.c"
+
+${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/malloc.c" -o "$BIN_DIR/malloc.o"
+check_error "Failed to compile malloc.c"
+
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.o"
 check_error "Failed to compile kernel.c"
 
@@ -120,6 +126,8 @@ ${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/power.o" \
     "$BIN_DIR/interrupts.o" \
     "$BIN_DIR/timer.o" \
+    "$BIN_DIR/pmm.o" \
+    "$BIN_DIR/malloc.o" \
     "$BIN_DIR/kshell.o" \
     "$BIN_DIR/console.o" \
     "$BIN_DIR/framebuffer.o" \

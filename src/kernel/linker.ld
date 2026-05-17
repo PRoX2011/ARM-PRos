@@ -23,4 +23,6 @@ SECTIONS
     . = ALIGN(16);
     . = . + 0x4000; /* 16 KB stack */
     stack_top = .;
+
+    __end = .;
 }
