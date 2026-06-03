@@ -1,3 +1,8 @@
+// ==================================================================
+// ARM-PRos - VideoCore mailbox property interface for ARM-PRos kernel
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 #include <drivers/mailbox.h>
 #include <stdint.h>
 

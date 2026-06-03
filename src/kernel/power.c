@@ -1,3 +1,8 @@
+// ==================================================================
+// ARM-PRos -- power control (shutdown / reboot)
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 #include <stdint.h>
 #include <gpio.h>
 #include <drivers/mailbox.h>

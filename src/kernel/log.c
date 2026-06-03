@@ -3,11 +3,13 @@
 #include <drivers/uart.h>
 #include <stdint.h>
 
-#define ANSI_RESET "\033[0m"
-#define ANSI_GREEN "\033[92m"
-#define ANSI_RED   "\033[91m"
+// ------ Serial: ANSI SGR escapes ------
+#define ANSI_RESET  "\033[0m"
+#define ANSI_GREEN  "\033[92m"
+#define ANSI_RED    "\033[91m"
 #define ANSI_ORANGE "\033[33m"
 
+// ------ Framebuffer: 0xAARRGGBB ------
 #define FB_GREEN  0xFF50AF4Cu
 #define FB_RED    0xFF3333FFu
 #define FB_ORANGE 0xFF4DB7FFu

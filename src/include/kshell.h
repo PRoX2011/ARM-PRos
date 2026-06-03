@@ -1,6 +1,6 @@
-#ifndef _KSHELL_H
-#define _KSHELL_H
+#ifndef KSHELL_H
+#define KSHELL_H
 
 void kshell_start(void);
 
-#endif /* _KSHELL_H */
+#endif

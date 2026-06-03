@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ==================================================================
-# ARM-PRos -- The build script for Linux
-# Copyright (C) 2026 PRoX
+# ARM-PRos - Linux build script for ARM-PRos kernel
+# Copyright (C) 2026 PRoX2011
 # ==================================================================
 
 set -e
@@ -54,45 +54,72 @@ check_error() {
 
 mkdir -p "$BIN_DIR"
 
-print_splitline "Starting ARM x16-PRos build..."
+print_splitline "Starting ARM-PRos build..."
 
 rm -f "$BIN_DIR"/*.o "$OUTPUT"
 
-CFLAGS="-ffreestanding -nostdlib -mgeneral-regs-only -Isrc/include"
-CROSS_COMPILE="aarch64-linux-gnu-"
+CC="clang"
+AS="clang"
+LD="ld.lld"
+CFLAGS="--target=aarch64-none-elf -ffreestanding -nostdlib -Isrc/include"
 
 print_info "Compiling Drivers..."
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/uart.c" -o "$BIN_DIR/uart.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/uart.c" -o "$BIN_DIR/uart.o"
 check_error "Failed to compile uart.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/mailbox.c" -o "$BIN_DIR/mailbox.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/mailbox.c" -o "$BIN_DIR/mailbox.o"
 check_error "Failed to compile mailbox.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/framebuffer.c" -o "$BIN_DIR/framebuffer.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/framebuffer.c" -o "$BIN_DIR/framebuffer.o"
 check_error "Failed to compile framebuffer.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/drivers/console.c" -o "$BIN_DIR/console.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/console.c" -o "$BIN_DIR/console.o"
 check_error "Failed to compile console.c"
 
-print_info "Compiling libc..."
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/lib/font8x8_basic.c" -o "$BIN_DIR/font8x8_basic.o"
-check_error "Failed to compile font8x8_basic.c"
+$CC $CFLAGS -c "$SRC_DIR/drivers/timer.c" -o "$BIN_DIR/timer.o"
+check_error "Failed to compile timer.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/lib/string.c" -o "$BIN_DIR/string.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/input.c" -o "$BIN_DIR/input.o"
+check_error "Failed to compile input.c"
+
+$CC $CFLAGS -c "$SRC_DIR/drivers/spi.c" -o "$BIN_DIR/spi.o"
+check_error "Failed to compile spi.c"
+
+$CC $CFLAGS -c "$SRC_DIR/drivers/lcd/ili9486.c" -o "$BIN_DIR/ili9486.o"
+check_error "Failed to compile ili9486.c"
+
+print_info "Compiling USB stack..."
+$CC $CFLAGS -c "$SRC_DIR/drivers/usb/usb.c" -o "$BIN_DIR/usb.o"
+check_error "Failed to compile usb.c"
+
+$CC $CFLAGS -c "$SRC_DIR/drivers/usb/keyboard.c" -o "$BIN_DIR/usb_kbd.o"
+check_error "Failed to compile keyboard.c"
+
+print_info "Compiling libc..."
+$CC $CFLAGS -c "$SRC_DIR/lib/font8x8.c" -o "$BIN_DIR/font8x8.o"
+check_error "Failed to compile font8x8.c"
+
+$CC $CFLAGS -c "$SRC_DIR/lib/font8x16.c" -o "$BIN_DIR/font8x16.o"
+check_error "Failed to compile font8x16.c"
+
+$CC $CFLAGS -c "$SRC_DIR/lib/font4x6.c" -o "$BIN_DIR/font4x6.o"
+check_error "Failed to compile font4x6.c"
+
+$CC $CFLAGS -c "$SRC_DIR/lib/string.c" -o "$BIN_DIR/string.o"
 check_error "Failed to compile string.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/lib/stdlib.c" -o "$BIN_DIR/stdlib.o"
+$CC $CFLAGS -c "$SRC_DIR/lib/stdlib.c" -o "$BIN_DIR/stdlib.o"
 check_error "Failed to compile stdlib.c"
 
 print_info "Compiling Shell..."
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kshell.c" -o "$BIN_DIR/kshell.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/kshell.c" -o "$BIN_DIR/kshell.o"
 check_error "Failed to compile kshell.c"
 
 print_info "Compiling Kernel..."
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/log.c" -o "$BIN_DIR/log.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/log.c" -o "$BIN_DIR/log.o"
 check_error "Failed to compile log.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/power.c" -o "$BIN_DIR/power.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/power.c" -o "$BIN_DIR/power.o"
 check_error "Failed to compile power.c"
 
 ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/interrupts.c" -o "$BIN_DIR/interrupts.o"
@@ -111,17 +138,18 @@ ${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.
 check_error "Failed to compile kernel.c"
 
 print_info "Assembling Bootstrap..."
-${CROSS_COMPILE}gcc -c "$SRC_DIR/arch/boot.S" -o "$BIN_DIR/boot.o"
+$AS --target=aarch64-none-elf -c "$SRC_DIR/arch/boot.S" -o "$BIN_DIR/boot.o"
 check_error "Failed to assemble boot.S"
 
 ${CROSS_COMPILE}gcc -c "$SRC_DIR/arch/exception.S" -o "$BIN_DIR/exception.o"
 check_error "Failed to assemble exception.S"
 
 print_info "Linking..."
-${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
+$LD -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/boot.o" \
     "$BIN_DIR/exception.o" \
     "$BIN_DIR/kernel_c.o" \
+    "$BIN_DIR/boot_menu.o" \
     "$BIN_DIR/log.o" \
     "$BIN_DIR/power.o" \
     "$BIN_DIR/interrupts.o" \
@@ -133,7 +161,15 @@ ${CROSS_COMPILE}ld -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/framebuffer.o" \
     "$BIN_DIR/mailbox.o" \
     "$BIN_DIR/uart.o" \
-    "$BIN_DIR/font8x8_basic.o" \
+    "$BIN_DIR/timer.o" \
+    "$BIN_DIR/input.o" \
+    "$BIN_DIR/spi.o" \
+    "$BIN_DIR/ili9486.o" \
+    "$BIN_DIR/usb.o" \
+    "$BIN_DIR/usb_kbd.o" \
+    "$BIN_DIR/font8x8.o" \
+    "$BIN_DIR/font8x16.o" \
+    "$BIN_DIR/font4x6.o" \
     "$BIN_DIR/string.o" \
     "$BIN_DIR/stdlib.o" \
     -o "$OUTPUT"
@@ -141,7 +177,7 @@ check_error "Failed to link"
 
 if [ -f "$OUTPUT" ]; then
     print_info "Creating kernel8.img (raw image for Raspberry Pi 3)..."
-    ${CROSS_COMPILE}objcopy -O binary "$OUTPUT" "${BUILD_DIR}/kernel8.img"
+    llvm-objcopy -O binary "$OUTPUT" "${BUILD_DIR}/kernel8.img"
     check_error "Failed to create kernel8.img"
 
     size_bytes=$(stat -c%s "$OUTPUT" 2>/dev/null || echo "0")

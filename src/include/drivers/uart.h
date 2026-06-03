@@ -1,11 +1,9 @@
-#if !defined(_UART_H)
-#define  _UART_H 
-#include <stdint.h>
+#ifndef DRIVERS_UART_H
+#define DRIVERS_UART_H
 
 void uart_init(void);
-void uart_putc(const char c);
-void uart_puthex(uint64_t n);
+void uart_putc(char c);
 void uart_puts(const char *s);
 char uart_getc(void);
 
-#endif  /*  _UART_H   */
+#endif

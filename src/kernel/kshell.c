@@ -1,3 +1,8 @@
+// ==================================================================
+// ARM-PRos -- kernel shell
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 #include <kshell.h>
 #include <drivers/console.h>
 #include <drivers/uart.h>
@@ -9,18 +14,19 @@
 
 #define CMD_MAX_LEN 256
 
-void kshell_start(void) {
-    char cmd_buffer[CMD_MAX_LEN];
-    int cmd_len = 0;
+void kshell_start(void)
+{
+	char cmd_buffer[CMD_MAX_LEN];
+	int cmd_len = 0;
 
-    console_puts("\n\r[PRos] > ");
+	console_puts("\n\r[PRos] > ");
 
-    while (1) {
-        char c = uart_getc();
+	while (1) {
+		char c = uart_getc();
 
-        if (c == '\r' || c == '\n') {
-            console_puts("\n\r");
-            cmd_buffer[cmd_len] = '\0';
+		if (c == '\r' || c == '\n') {
+			console_puts("\n\r");
+			cmd_buffer[cmd_len] = '\0';
 
             char *cmd = cmd_buffer;
             while (*cmd == ' ') cmd++;
@@ -69,20 +75,20 @@ void kshell_start(void) {
                 }
             }
 
-            cmd_len = 0;
-            console_puts("[PRos] > ");
-        } 
-        else if (c == '\b' || c == 0x7F) {
-            if (cmd_len > 0) {
-                cmd_len--;
-                console_puts("\b \b");
-            }
-        } 
-        else if (c >= 32 && c <= 126) {
-            if (cmd_len < CMD_MAX_LEN - 1) {
-                cmd_buffer[cmd_len++] = c;
-                console_putc(c);
-            }
-        }
-    }
+			cmd_len = 0;
+			console_puts("[PRos] > ");
+		}
+		else if (c == '\b' || c == 0x7F) {
+			if (cmd_len > 0) {
+				cmd_len--;
+				console_puts("\b \b");
+			}
+		}
+		else if (c >= 32 && c <= 126) {
+			if (cmd_len < CMD_MAX_LEN - 1) {
+				cmd_buffer[cmd_len++] = c;
+				console_putc(c);
+			}
+		}
+	}
 }

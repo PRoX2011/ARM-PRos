@@ -1,10 +1,7 @@
 #!/bin/bash
 
 # ==================================================================
-# Build a bootable Raspberry Pi SD image (MBR + FAT32 boot partition).
-# Puts kernel8.img and official GPU firmware on the card — same layout
-# as a real Pi 3 boot partition.
-# Requires: sfdisk (util-linux), mkfs.fat (dosfstools), mcopy (mtools), curl
+# Build a bootable Raspberry Pi SD image (MBR + FAT32 boot partition)
 # ==================================================================
 
 set -e

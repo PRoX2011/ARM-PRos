@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-void console_init(void);
 void console_putc(char c);
 void console_puts(const char *s);
 void console_clear(uint32_t bg);

@@ -1,5 +1,11 @@
+// ==================================================================
+// ARM-PRos - unified text console (UART + framebuffer) for ARM-PRos kernel
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 #include <drivers/console.h>
 #include <drivers/framebuffer.h>
+#include <drivers/lcd/ili9486.h>
 #include <drivers/uart.h>
 
 static void uart_put_u8_dec(unsigned n)
@@ -36,19 +42,13 @@ static void uart_clear_with_bg(uint32_t bg)
 	uart_puts("m\033[2J\033[H");
 }
 
-void console_init(void)
-{
-	uart_init();
-	if (fb_init(640u, 480u, 32u)) {
-		fb_clear();
-	}
-}
-
 void console_putc(char c)
 {
 	uart_putc(c);
 	if (fb_is_ready())
 		fb_putc((int)(unsigned char)c);
+	if (lcd_is_ready())
+		lcd_putc(c);
 }
 
 void console_puts(const char *s)
@@ -56,6 +56,8 @@ void console_puts(const char *s)
 	uart_puts(s);
 	if (fb_is_ready())
 		fb_puts(s);
+	if (lcd_is_ready())
+		lcd_puts(s);
 }
 
 void console_clear(uint32_t bg)
@@ -65,4 +67,6 @@ void console_clear(uint32_t bg)
 		fb_set_bg(bg);
 		fb_clear();
 	}
+	if (lcd_is_ready())
+		lcd_clear(bg);
 }

@@ -1,5 +1,11 @@
+// ==================================================================
+// ARM-PRos - AArch64 boot stub for ARM-PRos kernel
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 .section .text
 .global _start
+.global hang
 
 _start:
     mrs x0, CurrentEL
@@ -56,6 +62,10 @@ _start:
     wfe
     b   0b
 1:
+    adr x0, _vectors
+    msr vbar_el1, x0
+    isb
+
     ldr x30, =stack_top
     mov sp, x30
 
@@ -73,6 +83,46 @@ _start:
 3:
     bl  main
 
-4:
+hang:
     wfe
-    b   4b
+    b   hang
+
+.balign 0x800
+_vectors:
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+    .balign 0x80
+    b _exc_ignore
+
+_exc_ignore:
+    eret

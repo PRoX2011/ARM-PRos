@@ -1,8 +1,106 @@
 ----------------------- Key changes ARM-PRos v0.1 ----------------------
 
+First release. This is the beginning of something big, 
+something very interesting and maybe useful for someone.
+                                        -- PRoX
+
 =======================================================================================
 
-1. Added simple UART driver for output and input
+1. AArch64 bootstrap
+
+=======================================================================================
+
+2. PL011 UART serial console (debug output and fallback input when USB is unavailable)
+
+=======================================================================================
+
+3. VideoCore mailbox interface
+
+=======================================================================================
+
+4. HDMI framebuffer
+1) GPU-allocated framebuffer via mailbox property tags
+2) Configurable resolution
+3) Text rendering with built-in bitmap fonts: 4x6, 8x8, 8x16
+4) Per-glyph foreground/background color (0xAARRGGBB)
+5) Auto line-wrap, scrolling, newline/tab/backspace handling
+6) Positioned text and filled rectangles
+
+=======================================================================================
+
+5. ILI9486 SPI LCD driver (480x320)
+
+=======================================================================================
+
+6. DWC2 USB host controller
+1) Complete DesignWare USB 2.0 host stack for the RPi3
+2) Core reset, FIFO configuration, host-mode forcing
+3) Port management: connection detect, reset, speed detection (HS/FS/LS)
+4) Full device enumeration: descriptor parsing, address assignment, configuration
+5) Control, interrupt, and bulk transfers with timeout and NAK retry
+6) Split transactions for low-/full-speed devices behind a high-speed hub
+7) DMA with cache coherency (dc cvac / dc ivac)
+8) Up to 8 devices supported
+
+=======================================================================================
+
+7. USB HID keyboard driver
+1) Boot-protocol HID keyboard on the USB stack
+2) Full ASCII keymap
+3) Special keys: arrows, Home, End, Page Up/Down, Delete
+4) Previous-state tracking for debounce / repeat suppression
+5) Idle rate configuration via HID SET_IDLE request
+
+=======================================================================================
+
+8. Unified input subsystem
+1) Checks USB first, falls back to UART if USB is unavailable
+
+=======================================================================================
+
+9. Console multiplexer
+
+=======================================================================================
+
+10. Boot menu
+1) Graphical menu on framebuffer or SPI LCD if connected (falls back to UART-only if no display)
+2) Selection screens: display output, resolution, font size
+
+=======================================================================================
+
+11. Kshell
+
+=======================================================================================
+
+12. Power management
+1) Power off
+2) Reboot
+
+=======================================================================================
+
+13. Logging system
+
+=======================================================================================
+
+14. System timer
+1) BCM2837 64-bit system timer with atomic rollover-safe read
+2) Microsecond-precision delay (busy-wait with yield instruction)
+3) Millisecond delay wrapper
+
+=======================================================================================
+
+15. libc (bare bones yet)
+1) String functions: strlen, strcmp, strncmp, strcpy, strncpy,
+   memcpy, memset, memcmp
+2) atoi()
+3) itoa()
+
+=======================================================================================
+
+16. Three built-in bitmap fonts
+1) 4x6
+2) 8x8
+3) 8x16
 
 =======================================================================================
 

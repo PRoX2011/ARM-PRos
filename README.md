@@ -27,14 +27,20 @@
 - [X] String Library (`strcmp`, `strlen`, `atoi`)
 - [X] Kernel Shell
 - [X] Framebuffer
+- [X] USB driver
+- [X] Keyboard Driver
+- [X] Timer Driver
+- [X] SPI driver
+- [X] ILI9486 SPI LCD display driver
 - [ ] Interrupt Controller (GIC)
-- [ ] Keyboard Driver
-- [ ] Timer Driver
 - [ ] Physical Memory Manager
 - [ ] PCI Scanning
-- [ ] FAT32 file system
+- [ ] FAT32 filesystem
 - [ ] *.ELF programs
+- [ ] Rings 
 - [ ] Multitasking
+
+That's it for now, but maybe I'll come up with something else
 
 ## Building from Source
 

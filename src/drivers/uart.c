@@ -1,3 +1,8 @@
+// ==================================================================
+// ARM-PRos - PL011 UART driver for ARM-PRos kernel
+// Copyright (C) 2026 PRoX2011
+// ==================================================================
+
 #include <drivers/uart.h>
 
 #define PERIPHERAL_BASE     0x3F000000u
@@ -18,58 +23,45 @@
 
 static void gpio_uart_pins_alt0(void)
 {
-    unsigned int r = GPFSEL1;
-    r &= ~(7u << 12); /* GPIO14 */
-    r |=  (4u << 12); /* ALT0 = PL011 TXD0 */
-    r &= ~(7u << 15); /* GPIO15 */
-    r |=  (4u << 15); /* ALT0 = PL011 RXD0 */
-    GPFSEL1 = r;
+	unsigned int r = GPFSEL1;
+	r &= ~(7u << 12);
+	r |=  (4u << 12);
+	r &= ~(7u << 15);
+	r |=  (4u << 15);
+	GPFSEL1 = r;
 }
 
 void uart_init(void)
 {
-    gpio_uart_pins_alt0();
+	gpio_uart_pins_alt0();
 
-    UART0_CR = 0u;
-    UART0_ICR = 0x7FFu;
+	UART0_CR = 0u;
+	UART0_ICR = 0x7FFu;
 
-    unsigned long long denom = 16ull * UART_BAUD;
-    unsigned long long div64 =
-        (UART_CLOCK_HZ * 64ull + denom / 2ull) / denom;
-    UART0_IBRD = (unsigned int)(div64 / 64ull);
-    UART0_FBRD = (unsigned int)(div64 % 64ull);
+	unsigned long long denom = 16ull * UART_BAUD;
+	unsigned long long div64 =
+	    (UART_CLOCK_HZ * 64ull + denom / 2ull) / denom;
+	UART0_IBRD = (unsigned int)(div64 / 64ull);
+	UART0_FBRD = (unsigned int)(div64 % 64ull);
 
-    UART0_LCRH = (1u << 4) | (3u << 5);
-    UART0_CR   = (1u << 0) | (1u << 8) | (1u << 9);
+	UART0_LCRH = (1u << 4) | (3u << 5);
+	UART0_CR   = (1u << 0) | (1u << 8) | (1u << 9);
 }
 
-void uart_putc(const char c)
+void uart_putc(char c)
 {
 	while (UART0_FR & (1u << 5)) { }
 	UART0_DR = (unsigned int)(unsigned char)c;
 }
 
-void uart_puthex(uint64_t n)
+void uart_puts(const char *s)
 {
-	const char *hexdigits = "0123456789ABCDEF";
-
-	uart_putc('0');
-	uart_putc('x');
-	for (int i = 60; i >= 0; i -= 4){
-		uart_putc(hexdigits[(n >> i) & 0xf]);
-		if (i == 32)
-			uart_putc(' ');
-	}
-}
-
-void uart_puts(const char *s) {
-	for (int i = 0; s[i] != '\0'; i ++)
-		uart_putc((unsigned char)s[i]);
+	for (int i = 0; s[i] != '\0'; i++)
+		uart_putc(s[i]);
 }
 
 char uart_getc(void)
 {
-    while (UART0_FR & (1u << 4)) { }
-
-    return (char)(UART0_DR & 0xFFu);
+	while (UART0_FR & (1u << 4)) { }
+	return (char)(UART0_DR & 0xFFu);
 }

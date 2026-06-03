@@ -22,6 +22,6 @@ ldflags = [
 ld = "ld.lld"
 
 [run]
-cmd = "qemu-system-aarch64 -M raspi3b -kernel target/{profile}/KERNEL.ELF -serial stdio -display gtk"
+cmd = "qemu-system-aarch64 -M raspi3b -kernel target/{profile}/KERNEL.ELF -serial stdio -display gtk -device usb-kbd"
 
 [dependencies]
