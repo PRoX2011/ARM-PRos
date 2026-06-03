@@ -9,7 +9,7 @@
 #define TIMER_CLO  (*(volatile uint32_t *)(TIMER_BASE + 0x04u))
 #define TIMER_CHI  (*(volatile uint32_t *)(TIMER_BASE + 0x08u))
 
-uint64_t timer_get_ticks(void)
+uint64_t drv_timer_get_ticks(void)
 {
 	uint32_t hi = TIMER_CHI;
 	uint32_t lo = TIMER_CLO;
@@ -22,8 +22,8 @@ uint64_t timer_get_ticks(void)
 
 void delay_us(uint32_t us)
 {
-	uint64_t target = timer_get_ticks() + us;
-	while (timer_get_ticks() < target)
+	uint64_t target = drv_timer_get_ticks() + us;
+	while (drv_timer_get_ticks() < target)
 		__asm__ volatile("yield");
 }
 

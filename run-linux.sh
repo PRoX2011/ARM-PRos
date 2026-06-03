@@ -19,15 +19,15 @@ print_msg "$NC" ""
 print_msg "$GREEN" "Starting ARM emulator..."
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KERNEL_ELF="${ROOT}/build/KERNEL.ELF"
+KERNEL_IMG="${ROOT}/build/kernel8.img"
 
-if [ ! -f "$KERNEL_ELF" ]; then
-    print_msg "$RED" "Missing ${KERNEL_ELF} — run ./build-linux.sh first."
+if [ ! -f "$KERNEL_IMG" ]; then
+    print_msg "$RED" "Missing ${KERNEL_IMG} — run ./build-linux.sh first."
     exit 1
 fi
 
 qemu-system-aarch64 \
     -M raspi3b \
-    -kernel "$KERNEL_ELF" \
+    -kernel "$KERNEL_IMG" \
     -serial stdio \
     -display gtk

@@ -56,8 +56,6 @@ void main()
 	lcd_set_font_height(bmr.font_h);
 	lcd_clear(0x202428u);
 
-	log_okay("UART PL011 serial console ready");
-
 	if (fb_is_ready())
 		log_okay("Framebuffer ready");
 	else
@@ -68,17 +66,6 @@ void main()
 	else
 		log_warn("ILI9486 SPI LCD not available");
 
-	if (usb_kbd_available())
-		log_okay("USB keyboard ready");
-
-	log_okay("Kernel shell ready to start :)");
-
-    log_okay("UART PL011 serial console ready");
-    if (fb_is_ready())
-        log_okay("Framebuffer 640x480, 32 bpp (VideoCore mailbox)");
-    else
-        log_warn("Framebuffer not available - HDMI output disabled");
-    
     interrupts_init();
     timer_init();
     pmm_init();

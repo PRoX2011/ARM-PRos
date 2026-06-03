@@ -65,3 +65,10 @@ char uart_getc(void)
 	while (UART0_FR & (1u << 4)) { }
 	return (char)(UART0_DR & 0xFFu);
 }
+void uart_puthex(unsigned long long val) {
+    uart_puts("0x");
+    for (int i = 60; i >= 0; i -= 4) {
+        int digit = (val >> i) & 0xF;
+        uart_putc((digit < 10) ? ('0' + digit) : ('A' + digit - 10));
+    }
+}

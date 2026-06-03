@@ -58,8 +58,8 @@ print_splitline "Starting ARM-PRos build..."
 
 rm -f "$BIN_DIR"/*.o "$OUTPUT"
 
-CC="clang"
-AS="clang"
+CC="clang -target aarch64-none-elf"
+AS="clang -target aarch64-none-elf"
 LD="ld.lld"
 CFLAGS="--target=aarch64-none-elf -ffreestanding -nostdlib -Isrc/include"
 
@@ -76,7 +76,7 @@ check_error "Failed to compile framebuffer.c"
 $CC $CFLAGS -c "$SRC_DIR/drivers/console.c" -o "$BIN_DIR/console.o"
 check_error "Failed to compile console.c"
 
-$CC $CFLAGS -c "$SRC_DIR/drivers/timer.c" -o "$BIN_DIR/timer.o"
+$CC $CFLAGS -c "$SRC_DIR/drivers/timer.c" -o "$BIN_DIR/drv_timer.o"
 check_error "Failed to compile timer.c"
 
 $CC $CFLAGS -c "$SRC_DIR/drivers/input.c" -o "$BIN_DIR/input.o"
@@ -122,26 +122,29 @@ check_error "Failed to compile log.c"
 $CC $CFLAGS -c "$SRC_DIR/kernel/power.c" -o "$BIN_DIR/power.o"
 check_error "Failed to compile power.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/interrupts.c" -o "$BIN_DIR/interrupts.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/boot_menu.c" -o "$BIN_DIR/boot_menu.o"
+check_error "Failed to compile boot_menu.c"
+
+$CC $CFLAGS -c "$SRC_DIR/kernel/interrupts.c" -o "$BIN_DIR/interrupts.o"
 check_error "Failed to compile interrupts.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/timer.c" -o "$BIN_DIR/timer.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/timer.c" -o "$BIN_DIR/timer.o"
 check_error "Failed to compile timer.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/pmm.c" -o "$BIN_DIR/pmm.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/pmm.c" -o "$BIN_DIR/pmm.o"
 check_error "Failed to compile pmm.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/malloc.c" -o "$BIN_DIR/malloc.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/malloc.c" -o "$BIN_DIR/malloc.o"
 check_error "Failed to compile malloc.c"
 
-${CROSS_COMPILE}gcc $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.o"
+$CC $CFLAGS -c "$SRC_DIR/kernel/kernel.c" -o "$BIN_DIR/kernel_c.o"
 check_error "Failed to compile kernel.c"
 
 print_info "Assembling Bootstrap..."
 $AS --target=aarch64-none-elf -c "$SRC_DIR/arch/boot.S" -o "$BIN_DIR/boot.o"
 check_error "Failed to assemble boot.S"
 
-${CROSS_COMPILE}gcc -c "$SRC_DIR/arch/exception.S" -o "$BIN_DIR/exception.o"
+$CC -c "$SRC_DIR/arch/exception.S" -o "$BIN_DIR/exception.o"
 check_error "Failed to assemble exception.S"
 
 print_info "Linking..."
@@ -154,6 +157,7 @@ $LD -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/power.o" \
     "$BIN_DIR/interrupts.o" \
     "$BIN_DIR/timer.o" \
+    "$BIN_DIR/drv_timer.o" \
     "$BIN_DIR/pmm.o" \
     "$BIN_DIR/malloc.o" \
     "$BIN_DIR/kshell.o" \
@@ -161,7 +165,6 @@ $LD -T "$SRC_DIR/kernel/linker.ld" \
     "$BIN_DIR/framebuffer.o" \
     "$BIN_DIR/mailbox.o" \
     "$BIN_DIR/uart.o" \
-    "$BIN_DIR/timer.o" \
     "$BIN_DIR/input.o" \
     "$BIN_DIR/spi.o" \
     "$BIN_DIR/ili9486.o" \

@@ -120,43 +120,53 @@ int fb_init(unsigned width, unsigned height, unsigned depth_bits)
 
 	mbox[0] = 30u * 4u;
 	mbox[1] = 0u;
+
 	mbox[2] = TAG_SETPHYWH;
 	mbox[3] = 8u;
 	mbox[4] = 0u;
 	mbox[5] = width;
 	mbox[6] = height;
+
 	mbox[7] = TAG_SETVIRTWH;
 	mbox[8] = 8u;
 	mbox[9] = 0u;
 	mbox[10] = width;
 	mbox[11] = height;
+
 	mbox[12] = TAG_SETDEPTH;
 	mbox[13] = 4u;
 	mbox[14] = 0u;
 	mbox[15] = depth_bits;
+
 	mbox[16] = TAG_SETPXORD;
 	mbox[17] = 4u;
 	mbox[18] = 0u;
 	mbox[19] = 1u; /* RGB */
-	mbox[20] = TAG_GETPITCH;
-	mbox[21] = 4u;
+
+	mbox[20] = TAG_ALLOCBUF;
+	mbox[21] = 8u;
 	mbox[22] = 0u;
-	mbox[23] = 0u;
-	mbox[24] = TAG_ALLOCBUF;
-	mbox[25] = 8u;
-	mbox[26] = 0u;
-	mbox[27] = 16u; /* alignment */
-	mbox[28] = 0u;
-	mbox[29] = 0u;
+	mbox[23] = 16u; /* alignment */
+	mbox[24] = 0u;   /* response: address */
+
+	mbox[25] = TAG_GETPITCH;
+	mbox[26] = 4u;
+	mbox[27] = 0u;
+	mbox[28] = 0u;   /* response: pitch */
+
+	mbox[29] = 0u; /* end tag */
 
 	if (!mbox_call(mbox))
 		return 0;
 
-	fb_pitch = mbox[23];
+	if (mbox[1] != 0x80000000u)
+		return 0;
+
+	fb_pitch = mbox[28];
 	if (fb_pitch == 0 || (fb_pitch % 4u) != 0u)
 		return 0;
 
-	uint32_t gpu_ptr = mbox[27];
+	uint32_t gpu_ptr = mbox[23];
 	if (gpu_ptr == 0u)
 		return 0;
 
