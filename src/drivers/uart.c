@@ -21,6 +21,8 @@
 #define UART_CLOCK_HZ       48000000u
 #define UART_BAUD           115200u
 
+struct RingBuffer RxBuffer;
+
 static void gpio_uart_pins_alt0(void)
 {
 	unsigned int r = GPFSEL1;
@@ -64,4 +66,17 @@ char uart_getc(void)
 {
 	while (UART0_FR & (1u << 4)) { }
 	return (char)(UART0_DR & 0xFFu);
+}
+
+void uart_gets_interrupt(){
+	while(!(UART0_FR & (1U << 4))){
+		/*
+		Because it's better to initially set head to -1 for the Rx line.
+		But in some cases, you can move it after the assignment. Then, head must be exactly 0 upon initialization!
+		Т.к. лучше установить head изначально в: -1 для Rx линии. 
+		Но в случаи чего можно передвинуть после присваивания. Тогда head при инцилизации должен быть строго в 0!
+		*/
+		RxBuffer.head++; 
+		RxBuffer.buffer[RxBuffer.head] = (uint8_t)UART0_DR;
+	}
 }
